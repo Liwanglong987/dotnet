@@ -31,6 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ValidationInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\MVVMFormGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableObjectGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservablePropertyGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservablePropertyGenerator.Execute.cs" />
