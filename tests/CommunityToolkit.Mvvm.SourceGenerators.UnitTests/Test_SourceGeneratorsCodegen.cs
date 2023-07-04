@@ -2376,7 +2376,7 @@ public class Test_SourceGeneratorsCodegen
 
             namespace MyApp;
             
-            [MVVMForm]
+            [MVVMForm<ObservableObjectTest>]
             partial class MyViewModel : Form
             {
                
@@ -2385,7 +2385,7 @@ public class Test_SourceGeneratorsCodegen
 
         string result = "namespace MyApp;\r\npublic partial class MyViewModel\r\n{\r\n    public object VMDataContext\r\n    {\r\n        get\r\n        {\r\n            return this.DataContext;\r\n        }\r\n        set\r\n        {\r\n            this.DataContext = value;\r\n        }\r\n    }\r\n}";
 
-        VerifyGenerateSources(source, new[] { new MVVMFormGenerator() }, ("MyApp.MyViewModel.g.cs", result));
+        VerifyGenerateSources(source, new[] { new MVVMFormGenerator() }, ("MyViewModel.g.cs", result));
     }
 
     /// <summary>

@@ -184,7 +184,15 @@ internal static class ITypeSymbolExtensions
 
         symbol.AppendFullyQualifiedMetadataName(in builder);
 
-        return builder.WrittenSpan.SequenceEqual(name.AsSpan());
+        if (symbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType)
+        {
+            return builder.WrittenSpan.StartsWith(name.AsSpan()) &&
+                   name.Count() == builder.WrittenSpan.IndexOf('`');
+        }
+        else
+        {
+            return builder.WrittenSpan.SequenceEqual(name.AsSpan());
+        }
     }
 
     /// <summary>

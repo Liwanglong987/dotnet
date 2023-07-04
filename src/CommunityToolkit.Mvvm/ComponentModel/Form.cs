@@ -13,3 +13,11 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 public class Form
 {
 }
+
+/// <summary>
+/// 
+/// </summary>
+public class ObservableObjectTest : ObservableObject
+{
+
+}

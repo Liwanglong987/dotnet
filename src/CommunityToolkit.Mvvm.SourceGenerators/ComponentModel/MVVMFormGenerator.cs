@@ -20,6 +20,7 @@ public class MVVMFormGenerator : IIncrementalGenerator
 {
     const string formMetadataName = "CommunityToolkit.Mvvm.ComponentModel.Form";
     const string formAttributeMetadataName = "CommunityToolkit.Mvvm.ComponentModel.MVVMFormAttribute";
+    const string observableObjectMatadataName = "CommunityToolkit.Mvvm.ComponentModel.ObservableObject";
 
     /// <summary>
     /// 1. Get all attributed class
@@ -46,28 +47,26 @@ public class MVVMFormGenerator : IIncrementalGenerator
 
             static (context, classProvider) =>
             {
-                AttributeData mvvmFormAttributeNode = classProvider.Attributes
-                                                      .Single(attribute => attribute.AttributeClass != null &&
-                                                              attribute.AttributeClass.HasFullyQualifiedMetadataName(formAttributeMetadataName));
+                AttributeData mvvmFormAttributeNode =
+                        classProvider.Attributes
+                        .Single(attribute => attribute.AttributeClass != null &&
+                                attribute.AttributeClass.HasFullyQualifiedMetadataName(formAttributeMetadataName));
                 if (mvvmFormAttributeNode != default && classProvider.TargetSymbol is ITypeSymbol typeSymbol)
                 {
                     string source = string.Empty;
-                    INamedTypeSymbol? baseType = typeSymbol.BaseType;
-                    while (baseType != null)
+                    ITypeSymbol? genericType = mvvmFormAttributeNode.AttributeClass?.TypeArguments.Single();
+                    if (genericType != null &&
+                        genericType.InheritsFromFullyQualifiedMetadataName(observableObjectMatadataName) &&
+                        typeSymbol.InheritsFromFullyQualifiedMetadataName(formMetadataName))
                     {
-                        if (baseType.HasFullyQualifiedMetadataName(formMetadataName))
-                        {
-                            ISymbol targetSymbol = classProvider.TargetSymbol;
-                            source = "namespace " + typeSymbol.ContainingNamespace.ToDisplayString()
-                            + ";\r\npublic partial class " + typeSymbol.Name + "\r\n{\r\n    public object VMDataContext\r\n    {\r\n        get\r\n        {\r\n            return this.DataContext;\r\n        }\r\n        set\r\n        {\r\n            this.DataContext = value;\r\n        }\r\n    }\r\n}";
+                        ISymbol targetSymbol = classProvider.TargetSymbol;
+                        source = "namespace " + typeSymbol.ContainingNamespace.ToDisplayString() +
+                                 ";\r\npublic partial class " + typeSymbol.Name +
+                                 "\r\n{\r\n    public " + genericType.ToDisplayString() + 
+                                 " VMDataContext\r\n    {\r\n        get\r\n        {\r\n            return (" + genericType.ToDisplayString() + 
+                                 ")this.DataContext;\r\n        }\r\n        set\r\n        {\r\n            this.DataContext = value;\r\n        }\r\n    }\r\n}";
 
-                            context.AddSource($"{typeSymbol.Name}.g.cs", source);
-                            break;
-                        }
-                        else
-                        {
-                            baseType = baseType.BaseType;
-                        }
+                        context.AddSource($"{typeSymbol.Name}.g.cs", source);
                     }
 
                     if (source == string.Empty)

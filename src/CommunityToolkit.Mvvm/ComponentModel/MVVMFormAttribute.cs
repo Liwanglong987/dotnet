@@ -12,6 +12,14 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// 
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class MVVMFormAttribute : Attribute
+public class MVVMFormAttribute<TVM> : Attribute where TVM : ObservableObject
 {
+    //private readonly Type vMType;
+    ///// <summary>
+    ///// construct
+    ///// </summary>
+    //public MVVMFormAttribute()
+    //{
+    //    this.vMType = typeof(TVM);
+    //}
 }
