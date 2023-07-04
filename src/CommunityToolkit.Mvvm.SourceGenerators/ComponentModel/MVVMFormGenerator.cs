@@ -46,23 +46,35 @@ public class MVVMFormGenerator : IIncrementalGenerator
 
             static (context, classProvider) =>
             {
-                AttributeData mvvmFormAttributeNode = classProvider.Attributes.Single(attribute => attribute.AttributeClass != null && attribute.AttributeClass.HasFullyQualifiedMetadataName(formAttributeMetadataName));
-                if (mvvmFormAttributeNode != default)
+                AttributeData mvvmFormAttributeNode = classProvider.Attributes
+                                                      .Single(attribute => attribute.AttributeClass != null &&
+                                                              attribute.AttributeClass.HasFullyQualifiedMetadataName(formAttributeMetadataName));
+                if (mvvmFormAttributeNode != default && classProvider.TargetSymbol is ITypeSymbol typeSymbol)
                 {
-                    SyntaxNode node = classProvider.TargetNode;
-                    ISymbol targetSymbol = classProvider.TargetSymbol;
-                    var classType=classProvider.TargetSymbol.ContainingType;
-                  //  if(targetSymbol != null&&targetSymbol.)
+                    string source = string.Empty;
+                    INamedTypeSymbol? baseType = typeSymbol.BaseType;
+                    while (baseType != null)
                     {
+                        if (baseType.HasFullyQualifiedMetadataName(formMetadataName))
+                        {
+                            ISymbol targetSymbol = classProvider.TargetSymbol;
+                            source = "namespace " + typeSymbol.ContainingNamespace.ToDisplayString()
+                            + ";\r\npublic partial class " + typeSymbol.Name + "\r\n{\r\n    public object VMDataContext\r\n    {\r\n        get\r\n        {\r\n            return this.DataContext;\r\n        }\r\n        set\r\n        {\r\n            this.DataContext = value;\r\n        }\r\n    }\r\n}";
 
+                            context.AddSource($"{typeSymbol.Name}.g.cs", source);
+                            break;
+                        }
+                        else
+                        {
+                            baseType = baseType.BaseType;
+                        }
                     }
-                    string source = $"namespace {targetSymbol.ContainingNamespace.ToDisplayString()};\r\n" +
-                $"public partial class {targetSymbol.ContainingType.ToDisplayString()}\r\n" +
-                $"{{\r\n" +
-                $"  public object VMDataContext{{get{{return this.DataContext;}}set{{this.DataContext=value;}}}}" +
-                $"\r\n}}";
 
-                    context.AddSource($"{targetSymbol.ContainingType.ToDisplayString()}.g.cs", source);
+                    if (source == string.Empty)
+                    {
+                        //should report error
+                        //context.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor(,),, "attribute can only used on Form Class"));
+                    }
                 }
             });
 
