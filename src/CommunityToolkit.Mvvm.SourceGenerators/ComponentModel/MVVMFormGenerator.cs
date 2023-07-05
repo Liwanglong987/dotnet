@@ -16,7 +16,8 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel;
 /// <summary>
 /// 
 /// </summary>
-public class MVVMFormGenerator : IIncrementalGenerator
+[Generator(LanguageNames.CSharp)]
+public sealed class MVVMFormGenerator : IIncrementalGenerator
 {
     const string formMetadataName = "CommunityToolkit.Mvvm.ComponentModel.Form";
     const string formAttributeMetadataName = "CommunityToolkit.Mvvm.ComponentModel.MVVMFormAttribute";
