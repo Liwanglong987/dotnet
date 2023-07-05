@@ -19,7 +19,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel;
 [Generator(LanguageNames.CSharp)]
 public sealed class MVVMFormGenerator : IIncrementalGenerator
 {
-    const string formMetadataName = "CommunityToolkit.Mvvm.ComponentModel.Form";
+    const string formMetadataName = "System.Windows.Forms.Form";
     const string formAttributeMetadataName = "CommunityToolkit.Mvvm.ComponentModel.MVVMFormAttribute";
     const string observableObjectMatadataName = "CommunityToolkit.Mvvm.ComponentModel.ObservableObject";
 
