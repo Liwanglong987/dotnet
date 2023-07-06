@@ -61,11 +61,24 @@ public sealed class MVVMFormGenerator : IIncrementalGenerator
                         typeSymbol.InheritsFromFullyQualifiedMetadataName(formMetadataName))
                     {
                         ISymbol targetSymbol = classProvider.TargetSymbol;
-                        source = "namespace " + typeSymbol.ContainingNamespace.ToDisplayString() +
-                                 ";\r\npublic partial class " + typeSymbol.Name +
-                                 "\r\n{\r\n    public " + genericType.ToDisplayString() + 
-                                 " VMDataContext\r\n    {\r\n        get\r\n        {\r\n            return (" + genericType.ToDisplayString() + 
-                                 ")this.DataContext;\r\n        }\r\n        set\r\n        {\r\n            this.DataContext = value;\r\n        }\r\n    }\r\n}";
+                        source = $$"""
+                        namespace {{typeSymbol.ContainingNamespace.ToDisplayString()}};
+                        
+                        public partial class {{typeSymbol.Name}}
+                        {
+                            public {{genericType.ToDisplayString()}} VMDataContext
+                            {
+                                get
+                                {
+                                    return ({{genericType.ToDisplayString()}})this.DataContext;
+                                }
+                                set
+                                {
+                                    this.DataContext = value;
+                                }
+                            }
+                        }
+                        """;
 
                         context.AddSource($"{typeSymbol.Name}.g.cs", source);
                     }
